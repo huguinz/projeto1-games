@@ -8,13 +8,12 @@
 
 //Import da biblioteca do prisma client  para executar scripts BD
 const { PrismaClient } = require('@prisma/client')
-
+//Instancia da classe do prisma client, para gerar um objeto
+const prisma = new PrismaClient()
 
 //Função para inserir no Banco de Dados um novo jogo
 const insertJogo = async (jogo) => {
-    //Instancia da classe do prisma client, para gerar um objeto
-    const prisma = new PrismaClient()
-
+    try {
     let sql = `insert into tbl_jogo (
                                         nome,
                                         data_lancamento,
@@ -41,6 +40,10 @@ const insertJogo = async (jogo) => {
     } else {
         return false
     }
+    }catch(error) {
+        console.log(error)
+        return false
+    }
 }
 
 //Função para atualizar no Banco de Dados um jogo existente
@@ -55,12 +58,37 @@ const deleteJogo = async () => {
 
 //Função para retornar do Banco de Dados uma lista de jogos
 const selectAllJogo = async () => {
+    try {
+        //Script SQL para retornar os dados do banco
+        let sql = 'select * from tbl_jogo order by id desc'
 
+        //Executa o script SQL e aguarda o retorno dos dados
+        let result = await prisma.$queryRawUnsafe(sql)
+
+        if(result) {
+            return result
+        } else {
+            return false
+        }
+    } catch (error) {
+        return false
+    }
 }
 
 //Função para buscar no Banco de Dados um jogo pelo ID
-const selectByIdJogo = async () => {
+const selectByIdJogo = async (id) => {
+    try {
+        let sql = `select * from tbl_jogo where id = ${id}`
+        let result = await prisma.$queryRawUnsafe(sql)
 
+        if(result) {
+            return result
+        } else {
+            return false
+        }
+    } catch (error) {
+        return(false)
+    }
 }
 
 module.exports = {
@@ -68,5 +96,6 @@ module.exports = {
     updateJogo,
     deleteJogo,
     selectAllJogo,
-    selectAllJogo
+    selectAllJogo,
+    selectByIdJogo
 }
