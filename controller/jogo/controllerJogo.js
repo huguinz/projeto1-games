@@ -84,11 +84,18 @@ const listarJogo = async () => {
 //Função para buscar um jogo
 const buscarJogo = async (id) => {
     try {
-        if(id !=) {
-
+        if(id != '' || id != null || id != undefined) {
+            let resultJogo = await jogoDAO.selectByIdJogo(id)
+            if(resultJogo) {
+                return resultJogo
+            } else {
+                return MESSAGE.ERROR_NOT_FOUND
+            }
+        } else {
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL
         }
     } catch (error) {
-        
+        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 }
 
