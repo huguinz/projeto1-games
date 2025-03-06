@@ -44,6 +44,12 @@ const SUCCESS_CREATED_ITEM = {
                                 message: "Item criado com sucesso!"
                             }
 
+const SUCCESS_REQUEST = {
+    status: true,
+    status_code:200,
+    message: "A requisição foi bem sucedida!"
+}                       
+
 
 module.exports = {
     ERROR_REQUIRED_FIELDS,
@@ -51,5 +57,6 @@ module.exports = {
     ERROR_INTERNAL_SERVER_MODEL,
     ERROR_CONTENT_TYPE,
     SUCCESS_CREATED_ITEM,
+    SUCCESS_REQUEST,
     ERROR_NOT_FOUND
 }

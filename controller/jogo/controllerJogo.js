@@ -49,8 +49,27 @@ const atualizarJogo = async () => {
 }
 
 //Função para excluir o jogo
-const excluirJogo = async () => {
+const excluirJogo = async (id) => {
+    try {
+        let dadosJogos = {}
+        let resultJogo = await jogoDAO.deleteJogo(id)
 
+        if(id != '' || id != null || id != undefined || id != false || typeof(resultJogo) == 'object') {
+            if(resultJogo) {
+                dadosJogos.status = true
+                dadosJogos.status_code = 200
+                dadosJogos.message = 'Operação realizada com sucesso!'
+
+                return dadosJogos
+            } else {
+                return MESSAGE.ERROR_NOT_FOUND
+            }
+        } else {
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL
+        }
+    } catch (error) {
+        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER
+    }
 }
 
 //Função para retornar todos os jogos
@@ -84,10 +103,17 @@ const listarJogo = async () => {
 //Função para buscar um jogo
 const buscarJogo = async (id) => {
     try {
-        if(id != '' || id != null || id != undefined) {
-            let resultJogo = await jogoDAO.selectByIdJogo(id)
-            if(resultJogo) {
-                return resultJogo
+        let dadosJogos = {}
+        let resultJogo = await jogoDAO.selectByIdJogo(id)
+
+        if(id != '' || id != null || id != undefined || id != false  || typeof(resultJogo) == 'object') {
+            if(resultJogo.length > 0) {
+                dadosJogos.status = true
+                dadosJogos.status_code = 200
+                dadosJogos.message = 'Operação realizada com sucesso!'
+                dadosJogos.jogo_encontrado = resultJogo
+
+                return dadosJogos
             } else {
                 return MESSAGE.ERROR_NOT_FOUND
             }
