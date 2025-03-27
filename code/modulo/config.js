@@ -44,11 +44,17 @@ const SUCCESS_CREATED_ITEM = {
                                 message: "Item criado com sucesso!"
                             }
 
-const SUCCESS_REQUEST = {
+const SUCCESS_DELETED_ITEM = {
     status: true,
     status_code:200,
-    message: "A requisição foi bem sucedida!"
+    message: "item excluído com sucesso!"
 }                       
+
+const SUCCESS_UPDATED_ITEM = {
+    status: true,
+    status_code:200,
+    message: "Item atualizado com sucesso!"
+}
 
 
 module.exports = {
@@ -57,6 +63,7 @@ module.exports = {
     ERROR_INTERNAL_SERVER_MODEL,
     ERROR_CONTENT_TYPE,
     SUCCESS_CREATED_ITEM,
-    SUCCESS_REQUEST,
-    ERROR_NOT_FOUND
+    ERROR_NOT_FOUND,
+    SUCCESS_DELETED_ITEM,
+    SUCCESS_UPDATED_ITEM
 }

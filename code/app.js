@@ -77,8 +77,25 @@ app.get('/v1/controle-jogos/jogo/:id', cors(), async(request, response) => {
 })
 
 app.delete('/v1/controle-jogos/jogo/delete/:id', cors(), async(request, response) => {
-    let uf = request.params.id
-    let resultJogo = await controllerJogo.excluirJogo(uf)
+    let idJogo = request.params.id
+    let resultJogo = await controllerJogo.excluirJogo(idJogo)
+
+    response.status(resultJogo.status_code)
+    response.json(resultJogo)
+})
+
+app.put('/v1/controle-jogos/jogo/update/:id', cors(), bodyParserJSON, async(request, response) => {
+
+    //Recendo o content type da requisição
+    let contentType = request.headers['content-type']
+    
+    //Recebe o ID do jogo
+    let idJogo = request.params.id
+
+    //Recebe os dados do jogo encaminhando no body da requisição
+    let dadosBody = request.body
+
+    let resultJogo = await controllerJogo.atualizarJogo(dadosBody, idJogo, contentType)
 
     response.status(resultJogo.status_code)
     response.json(resultJogo)
