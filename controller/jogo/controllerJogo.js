@@ -19,22 +19,22 @@ const inserirJogo = async (jogo, contentType) => {
 				jogo.nome == undefined ||
 				jogo.nome == '' ||
 				jogo.nome == null ||
-				jogo.nome.lenght > 80 ||
+				jogo.nome.length > 80 ||
 				jogo.data_lancamento == undefined ||
 				jogo.data_lancamento == '' ||
 				jogo.data_lancamento == null ||
-				jogo.data_lancamento.lenght > 10 ||
+				jogo.data_lancamento.length > 10 ||
 				jogo.versao == undefined ||
 				jogo.versao == '' ||
 				jogo.versao == null ||
-				jogo.versao.lenght > 10 ||
+				jogo.versao.length > 10 ||
 				jogo.tamanho == undefined ||
-				jogo.tamanho.lenght > 10 ||
+				jogo.tamanho.length > 10 ||
 				jogo.descricao == undefined ||
 				jogo.foto_capa == undefined ||
-				jogo.foto_capa.lenght > 200 ||
+				jogo.foto_capa.length > 200 ||
 				jogo.link == undefined ||
-				jogo.link.lenght > 200 ||
+				jogo.link.length > 200 ||
 				jogo.link == null
 			) {
 				return MESSAGE.ERROR_REQUIRED_FIELDS //400
@@ -64,22 +64,22 @@ const atualizarJogo = async (jogo, id, contentType) => {
 				jogo.nome == undefined ||
 				jogo.nome == '' ||
 				jogo.nome == null ||
-				jogo.nome.lenght > 80 ||
+				jogo.nome.length > 80 ||
 				jogo.data_lancamento == undefined ||
 				jogo.data_lancamento == '' ||
 				jogo.data_lancamento == null ||
-				jogo.data_lancamento.lenght > 10 ||
+				jogo.data_lancamento.length > 10 ||
 				jogo.versao == undefined ||
 				jogo.versao == '' ||
 				jogo.versao == null ||
-				jogo.versao.lenght > 10 ||
+				jogo.versao.length > 10 ||
 				jogo.tamanho == undefined ||
-				jogo.tamanho.lenght > 10 ||
+				jogo.tamanho.length > 10 ||
 				jogo.descricao == undefined ||
 				jogo.foto_capa == undefined ||
-				jogo.foto_capa.lenght > 200 ||
+				jogo.foto_capa.length > 200 ||
 				jogo.link == undefined ||
-				jogo.link.lenght > 200 ||
+				jogo.link.length > 200 ||
 				id == undefined ||
 				id == '' ||
 				id == null ||

@@ -19,4 +19,4 @@ CREATE TABLE tbl_genero (
 );
 
 SHOW TABLES;
-DESC tbl_jogo;
+DESC tbl_genero;
