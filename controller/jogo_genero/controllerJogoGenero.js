@@ -30,6 +30,58 @@ const insertGameGenreController = async (gameGenre, contentType) => {
 	}
 }
 
+const selectAllGameGenreController = async () => {
+	try {
+		let gameGenreData = {}
+		let responseData = await jogoGeneroDAO.selectAllGameGenre()
+
+		if (responseData !== false || typeof responseData === 'object') {
+			if (responseData.length > 0) {
+				gameGenreData.status = true
+				gameGenreData.status_code = 200
+				gameGenreData.items = gameGenreData.length
+				gameGenreData.games = responseData
+
+				return gameGenreData
+			} else {
+				return MESSAGE.ERROR_NOT_FOUND
+			}
+		} else {
+			return MESSAGE.ERROR_INTERNAL_SERVER_MODEL
+		}
+	} catch (error) {
+		return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER
+	}
+}
+
+const selectByIdGameGenreControler = async (id) => {
+	try {
+		let gameGenreData = {}
+		let responseData = await jogoGeneroDAO.selectByIdGameGenre(parseInt(id))
+
+		if (id == '' || id == null || id == undefined || id <= 0 || isNaN(id)) {
+			return MESSAGE.ERROR_REQUIRED_FIELDS
+		} else if (responseData !== false && typeof responseData === 'object') {
+			if (resultJogo.length > 0) {
+				gameGenreData.status = true
+				gameGenreData.status_code = 200
+				gameGenreData.message = 'Operação realizada com sucesso!'
+				gameGenreData.jogo_encontrado = responseData
+
+				return gameGenreData
+			} else {
+				return MESSAGE.ERROR_NOT_FOUND
+			}
+		} else {
+			return MESSAGE.ERROR_INTERNAL_SERVER_MODEL
+		}
+	} catch (error) {
+		return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER
+	}
+}
+
 module.exports = {
-	insertGameGenreController
+	insertGameGenreController,
+	selectAllGameGenreController,
+	selectByIdGameGenreControler
 }

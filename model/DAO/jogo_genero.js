@@ -24,6 +24,32 @@ const insertGameGenre = async (gameGenre) => {
 	}
 }
 
+const selectAllGameGenre = async () => {
+	try {
+		let sql = 'SELECT * FROM tbl_genero ORDER BY ID DESC'
+		let result = await prisma.$queryRawUnsafe(sql)
+
+		return result ? result : false
+	} catch (error) {
+		console.log(error)
+		return false
+	}
+}
+
+const selectByIdGameGenre = async (id) => {
+	try {
+		let sql = `SELECT * FROM tbl_genero WHERE ID = ${id}`
+		let result = await prisma.$queryRawUnsafe(sql)
+
+		return result ? result : false
+	} catch (error) {
+		console.log(error)
+		return false
+	}
+}
+
 module.exports = {
-	insertGameGenre
+	insertGameGenre,
+	selectAllGameGenre,
+	selectByIdGameGenre
 }

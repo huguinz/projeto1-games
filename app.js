@@ -108,6 +108,21 @@ app.post('/v1/controle-jogos/jogo/genero', cors(), bodyParserJSON, async (reques
 	response.json(responseGender)
 })
 
+app.get('/v1/controle-jogos/jogo/genero/select', cors(), bodyParserJSON, async (request, response) => {
+	const responseAllGender = await controllerJogoGenero.selectAllGameGenreController()
+
+	response.status(responseAllGender.status_code)
+	response.json(responseAllGender)
+})
+
+app.get('/v1/controle-jogos/jogo/genero/:id', cors(), async (request, response) => {
+	const idGenre = request.params.id
+	let responseIdGender = await controllerJogoGenero.selectByIdGameGenreControler(idGenre)
+
+	response.status(responseIdGender.status_code)
+	response.json(responseIdGender)
+})
+
 app.listen(8080, () => {
 	console.log('API aguardando requisições...')
 })

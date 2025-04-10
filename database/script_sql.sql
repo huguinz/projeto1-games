@@ -1,5 +1,3 @@
-CREATE DATABASE db_controle_jogos_bb;
-
 USE db_controle_jogos_bb;
 
 CREATE TABLE tbl_jogo (
@@ -18,5 +16,11 @@ CREATE TABLE tbl_genero (
 	nome VARCHAR(45) NOT NULL
 );
 
+CREATE TABLE tbl_multiplayer (
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    modo_jogo VARCHAR(45) NOT NULL
+);
+
 SHOW TABLES;
+SELECT * FROM tbl_genero;
 DESC tbl_genero;
