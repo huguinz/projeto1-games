@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,7 +7,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model tbl_teste {
-  id Int @id @default(autoincrement())
-  nome String
+model tbl_jogo {
+  id              Int      @id @default(autoincrement())
+  nome            String   @db.VarChar(80)
+  data_lancamento DateTime @db.Date
+  versao          String   @db.VarChar(10)
+  tamanho         String?  @db.VarChar(10)
+  descricao       String?  @db.Text
+  foto_capa       String?  @db.VarChar(200)
+  link            String   @db.VarChar(200)
+}
+
+model tbl_genero {
+  id   Int    @id @default(autoincrement())
+  nome String @db.VarChar(45)
+}
+
+model tbl_multiplayer {
+  id        Int    @id @default(autoincrement())
+  modo_jogo String @db.VarChar(45)
 }
