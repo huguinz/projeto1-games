@@ -123,6 +123,25 @@ app.get('/v1/controle-jogos/jogo/genero/:id', cors(), async (request, response) 
 	response.json(responseIdGender)
 })
 
+app.delete('/v1/controle-jogos/jogo/genero/delete/:id', cors(), async (request, response) => {
+	let idGenre = request.params.id
+	let responseDeleteId = await controllerJogoGenero.deleteGameController(idGenre)
+
+	response.status(responseDeleteId.status_code)
+	response.json(responseDeleteId)
+})
+
+app.put('/v1/controle-jogos/jogo/genero/update/:id', cors(), bodyParserJSON, async (request, response) => {
+	let contentType = request.headers['content-type']
+	let idGameGenre = request.params.id
+	let body = request.body
+
+	let responseUpdateId = await controllerJogoGenero.updateGameController(body, idGameGenre, contentType)
+
+	response.status(responseUpdateId.status_code)
+	response.json(responseUpdateId)
+})
+
 app.listen(8080, () => {
 	console.log('API aguardando requisições...')
 })

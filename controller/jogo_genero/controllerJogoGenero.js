@@ -62,7 +62,7 @@ const selectByIdGameGenreControler = async (id) => {
 		if (id == '' || id == null || id == undefined || id <= 0 || isNaN(id)) {
 			return MESSAGE.ERROR_REQUIRED_FIELDS
 		} else if (responseData !== false && typeof responseData === 'object') {
-			if (resultJogo.length > 0) {
+			if (responseData.length > 0) {
 				gameGenreData.status = true
 				gameGenreData.status_code = 200
 				gameGenreData.message = 'Operação realizada com sucesso!'
@@ -80,8 +80,72 @@ const selectByIdGameGenreControler = async (id) => {
 	}
 }
 
+const deleteGameController = async (id) => {
+	try {
+		if (id == '' || id == null || id == undefined || id <= 0 || isNaN(id)) {
+			return MESSAGE.ERROR_REQUIRED_FIELDS
+		} else {
+			id = parseInt(id)
+			let isIdExists = await jogoGeneroDAO.selectByIdGameGenre(id)
+
+			if (isIdExists !== false && typeof isIdExists === 'object') {
+				if (isIdExists.length === 1) {
+					let responseData = await jogoGeneroDAO.deleteGameGenre(id)
+
+					return responseData ? MESSAGE.SUCCESS_DELETED_ITEM : MESSAGE.ERROR_INTERNAL_SERVER_MODEL
+				} else {
+					return MESSAGE.ERROR_NOT_FOUND
+				}
+			} else {
+				return MESSAGE.ERROR_INTERNAL_SERVER_MODEL
+			}
+		}
+	} catch (error) {
+		return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER
+	}
+}
+
+const updateGameController = async (gameGenre, id, contentType) => {
+	try {
+		if (contentType === 'application/json') {
+			if (
+				gameGenre.nome === '' ||
+				gameGenre.nome === undefined ||
+				gameGenre.nome === null ||
+				gameGenre.nome > 45 ||
+				id === null ||
+				id === undefined ||
+				id <= 0 ||
+				isNaN(id)
+			) {
+				return MESSAGE.ERROR_REQUIRED_FIELDS
+			} else {
+				let isIdExists = await jogoGeneroDAO.selectByIdGameGenre(parseInt(id))
+
+				if (isIdExists !== false && typeof isIdExists === 'object' && isIdExists.length === 1) {
+					gameGenre.id = parseInt(id)
+
+					let responseData = await jogoGeneroDAO.updateGameGenre(gameGenre)
+
+					return responseData ? MESSAGE.SUCCESS_UPDATED_ITEM : MESSAGE.ERROR_INTERNAL_SERVER_MODEL
+				} else if (isIdExists.length < 1) {
+					return MESSAGE.ERROR_NOT_FOUND
+				} else {
+					return MESSAGE.ERROR_INTERNAL_SERVER_MODEL
+				}
+			}
+		} else {
+			return MESSAGE.ERROR_CONTENT_TYPE
+		}
+	} catch (error) {
+		return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER
+	}
+}
+
 module.exports = {
 	insertGameGenreController,
 	selectAllGameGenreController,
-	selectByIdGameGenreControler
+	selectByIdGameGenreControler,
+	deleteGameController,
+	updateGameController
 }

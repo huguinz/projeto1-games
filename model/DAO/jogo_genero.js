@@ -48,8 +48,34 @@ const selectByIdGameGenre = async (id) => {
 	}
 }
 
+const deleteGameGenre = async (id) => {
+	try {
+		let sql = `DELETE FROM tbl_genero WHERE ID = ${id}`
+		let result = await prisma.$executeRawUnsafe(sql)
+
+		return result ? result : false
+	} catch (error) {
+		console.log(error)
+		return false
+	}
+}
+
+const updateGameGenre = async (gameGenre) => {
+	try {
+		let sql = `UPDATE tbl_genero SET nome = '${gameGenre.nome}' WHERE ID = ${gameGenre.id}`
+		let result = await prisma.$executeRawUnsafe(sql)
+
+		return result ? result : false
+	} catch (error) {
+		console.log(error)
+		return false
+	}
+}
+
 module.exports = {
 	insertGameGenre,
 	selectAllGameGenre,
-	selectByIdGameGenre
+	selectByIdGameGenre,
+	deleteGameGenre,
+	updateGameGenre
 }
