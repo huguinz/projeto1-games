@@ -29,6 +29,7 @@ const bodyParser = require('body-parser')
 const controllerJogo = require('./controller/jogo/controllerJogo.js')
 const controllerGenero = require('./controller/genero/controllerGenero.js')
 const controllerMultiplayer = require('./controller/multiplayer/controllerMultiplayer.js')
+const controllerPlatform = require('./controller/plataforma/controllerPlataforma.js')
 
 //Estabelecendo o formato de dados que deverá chegar no body da requisição (POST ou PUT)
 const bodyParserJSON = bodyParser.json()
@@ -185,6 +186,23 @@ app.put('/v1/controle-jogos/jogo/multiplayer/update/:id', cors(), bodyParserJSON
 
 	response.status(responseUpdateId.status_code)
 	response.json(responseUpdateId)
+})
+
+app.post('/v1/controle-jogos/jogo/plataforma', cors(), bodyParserJSON, async (request, response) => {
+	const contentType = request.headers['content-type']
+	const data = request.body
+
+	const responsePlatform = await controllerPlatform.insertPlatformController(data, contentType)
+
+	response.status(responsePlatform.status_code)
+	response.json(responsePlatform)
+})
+
+app.get('/v1/controle-jogos/jogo/plataforma/select', cors(), async (request, response) => {
+	const responseAllPlatform = await controllerPlatform.selectAllPlatformController()
+
+	response.status(responseAllPlatform.status_code)
+	response.json(responseAllPlatform)
 })
 
 app.listen(8080, () => {
