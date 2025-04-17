@@ -15,7 +15,7 @@ model tbl_jogo {
   tamanho         String?  @db.VarChar(10)
   descricao       String?  @db.Text
   foto_capa       String?  @db.VarChar(200)
-  link            String   @db.VarChar(200)
+  link            String?  @db.VarChar(200)
 }
 
 model tbl_genero {
@@ -26,4 +26,15 @@ model tbl_genero {
 model tbl_multiplayer {
   id        Int    @id @default(autoincrement())
   modo_jogo String @db.VarChar(45)
+}
+
+model tbl_plataforma {
+  id             Int    @id @default(autoincrement())
+  nome           String @db.VarChar(45)
+  ano_lancamento Int
+}
+
+model tbl_teste {
+  id   Int    @id @default(autoincrement())
+  nome String
 }
