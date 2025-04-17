@@ -27,7 +27,8 @@ const bodyParser = require('body-parser')
 
 //Import das controllers parar realizar o CRUD de dados
 const controllerJogo = require('./controller/jogo/controllerJogo.js')
-const controllerJogoGenero = require('./controller/jogo_genero/controllerJogoGenero.js')
+const controllerGenero = require('./controller/genero/controllerGenero.js')
+const controllerMultiplayer = require('./controller/multiplayer/controllerMultiplayer.js')
 
 //Estabelecendo o formato de dados que deverá chegar no body da requisição (POST ou PUT)
 const bodyParserJSON = bodyParser.json()
@@ -102,14 +103,14 @@ app.post('/v1/controle-jogos/jogo/genero', cors(), bodyParserJSON, async (reques
 	const contentType = request.headers['content-type']
 	const dadosBody = request.body
 
-	const responseGender = await controllerJogoGenero.insertGameGenreController(dadosBody, contentType)
+	const responseGender = await controllerGenero.insertGenreController(dadosBody, contentType)
 
 	response.status(responseGender.status_code)
 	response.json(responseGender)
 })
 
 app.get('/v1/controle-jogos/jogo/genero/select', cors(), bodyParserJSON, async (request, response) => {
-	const responseAllGender = await controllerJogoGenero.selectAllGameGenreController()
+	const responseAllGender = await controllerGenero.selectAllGenreController()
 
 	response.status(responseAllGender.status_code)
 	response.json(responseAllGender)
@@ -117,7 +118,7 @@ app.get('/v1/controle-jogos/jogo/genero/select', cors(), bodyParserJSON, async (
 
 app.get('/v1/controle-jogos/jogo/genero/:id', cors(), async (request, response) => {
 	const idGenre = request.params.id
-	let responseIdGender = await controllerJogoGenero.selectByIdGameGenreControler(idGenre)
+	let responseIdGender = await controllerGenero.selectByIdGenreControler(idGenre)
 
 	response.status(responseIdGender.status_code)
 	response.json(responseIdGender)
@@ -125,7 +126,7 @@ app.get('/v1/controle-jogos/jogo/genero/:id', cors(), async (request, response) 
 
 app.delete('/v1/controle-jogos/jogo/genero/delete/:id', cors(), async (request, response) => {
 	let idGenre = request.params.id
-	let responseDeleteId = await controllerJogoGenero.deleteGameController(idGenre)
+	let responseDeleteId = await controllerGenero.deleteGenreController(idGenre)
 
 	response.status(responseDeleteId.status_code)
 	response.json(responseDeleteId)
@@ -136,7 +137,51 @@ app.put('/v1/controle-jogos/jogo/genero/update/:id', cors(), bodyParserJSON, asy
 	let idGameGenre = request.params.id
 	let body = request.body
 
-	let responseUpdateId = await controllerJogoGenero.updateGameController(body, idGameGenre, contentType)
+	let responseUpdateId = await controllerGenero.updateGenreController(body, idGameGenre, contentType)
+
+	response.status(responseUpdateId.status_code)
+	response.json(responseUpdateId)
+})
+
+app.post('/v1/controle-jogos/jogo/multiplayer', cors(), bodyParserJSON, async (request, response) => {
+	const contentType = request.headers['content-type']
+	const dadosBody = request.body
+
+	const responseMultiplayer = await controllerMultiplayer.insertMultiplayerController(dadosBody, contentType)
+
+	response.status(responseMultiplayer.status_code)
+	response.json(responseMultiplayer)
+})
+
+app.get('/v1/controle-jogos/jogo/multiplayer/select', cors(), async (request, response) => {
+	const responseAllMultiplayer = await controllerMultiplayer.selectAllMultiplayerController()
+
+	response.status(responseAllMultiplayer.status_code)
+	response.json(responseAllMultiplayer)
+})
+
+app.get('/v1/controle-jogos/jogo/multiplayer/:id', cors(), async (request, response) => {
+	const idMultiplayer = request.params.id
+	const responseIdMultiplayer = await controllerMultiplayer.selectByIdMultiplayerControler(idMultiplayer)
+
+	response.status(responseIdMultiplayer.status_code)
+	response.json(responseIdMultiplayer)
+})
+
+app.delete('/v1/controle-jogos/jogo/multiplayer/delete/:id', cors(), async (request, response) => {
+	const idMultiplayer = request.params.id
+	const responseDeleteId = await controllerMultiplayer.deleteMultiplayerController(idMultiplayer)
+
+	response.status(responseDeleteId.status_code)
+	response.json(responseDeleteId)
+})
+
+app.put('/v1/controle-jogos/jogo/multiplayer/update/:id', cors(), bodyParserJSON, async (request, response) => {
+	const contentType = request.headers['content-type']
+	const idMultiplayer = request.params.id
+	const body = request.body
+
+	const responseUpdateId = await controllerMultiplayer.updateMultiplayerController(body, idMultiplayer, contentType)
 
 	response.status(responseUpdateId.status_code)
 	response.json(responseUpdateId)
