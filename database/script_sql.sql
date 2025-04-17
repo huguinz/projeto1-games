@@ -21,6 +21,12 @@ CREATE TABLE tbl_multiplayer (
     modo_jogo VARCHAR(45) NOT NULL
 );
 
+CREATE TABLE tbl_plataforma (
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(45) NOT NULL,
+    ano_lancamento INT NOT NULL
+);
+
 SHOW TABLES;
-SELECT * FROM tbl_genero;
-DESC tbl_genero;
+SELECT * FROM tbl_plataforma;
+DESC tbl_plataforma;
