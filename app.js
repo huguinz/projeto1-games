@@ -205,6 +205,33 @@ app.get('/v1/controle-jogos/jogo/plataforma/select', cors(), async (request, res
 	response.json(responseAllPlatform)
 })
 
+app.get('/v1/controle-jogos/jogo/plataforma/:id', cors(), async (request, response) => {
+	const idPlatform = request.params.id
+	const responsePlatform = await controllerPlatform.selectByIdPlatformController(idPlatform)
+
+	response.status(responsePlatform.status_code)
+	response.json(responsePlatform)
+})
+
+app.delete('/v1/controle-jogos/jogo/plataforma/delete/:id', cors(), async (request, response) => {
+	const idPlatform = request.params.id
+	const responseController = await controllerPlatform.deletePlatformController(idPlatform)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.put('/v1/controle-jogos/jogo/plataforma/update/:id', cors(), bodyParserJSON, async (request, response) => {
+	const contentType = request.headers['content-type']
+	const idPlatform = request.params.id
+	const body = request.body
+
+	const responseController = await controllerPlatform.updatePlatformController(body, idPlatform, contentType)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
 app.listen(8080, () => {
 	console.log('API aguardando requisições...')
 })
