@@ -30,6 +30,7 @@ const controllerJogo = require('./controller/jogo/controllerJogo.js')
 const controllerGenero = require('./controller/genero/controllerGenero.js')
 const controllerMultiplayer = require('./controller/multiplayer/controllerMultiplayer.js')
 const controllerPlatform = require('./controller/plataforma/controllerPlataforma.js')
+const controllerAgeGroup = require('./controller/faixa_etaria/controllerAgeGroup.js')
 
 //Estabelecendo o formato de dados que deverá chegar no body da requisição (POST ou PUT)
 const bodyParserJSON = bodyParser.json()
@@ -227,6 +228,49 @@ app.put('/v1/controle-jogos/jogo/plataforma/update/:id', cors(), bodyParserJSON,
 	const body = request.body
 
 	const responseController = await controllerPlatform.updatePlatformController(body, idPlatform, contentType)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.post('/v1/controle-jogos/jogo/faixa-etaria', cors(), bodyParserJSON, async (request, response) => {
+	const contentType = request.headers['content-type']
+	const data = request.body
+	const responseController = await controllerAgeGroup.insertAgeGroupController(data, contentType)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.get('/v1/controle-jogos/jogo/faixa-etaria/select', cors(), async (request, response) => {
+	const responseController = await controllerAgeGroup.selectAllAgeGroupController()
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.get('/v1/controle-jogos/jogo/faixa-etaria/select/:id', cors(), async (request, response) => {
+	const idAgeGroup = request.params.id
+	const responseController = await controllerAgeGroup.selectByIdAgeGroupController(idAgeGroup)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.delete('/v1/controle-jogos/jogo/faixa-etaria/delete/:id', cors(), async (request, response) => {
+	const idAgeGroup = request.params.id
+	const responseController = await controllerAgeGroup.deleteAgeGroupController(idAgeGroup)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.put('/v1/controle-jogos/jogo/faixa-etaria/update/:id', cors(), bodyParserJSON, async (request, response) => {
+	const idAgeGroup = request.params.id
+	const contentType = request.headers['content-type']
+	const body = request.body
+
+	const responseController = await controllerAgeGroup.updateAgeGroupController(body, idAgeGroup, contentType)
 
 	response.status(responseController.status_code)
 	response.json(responseController)
