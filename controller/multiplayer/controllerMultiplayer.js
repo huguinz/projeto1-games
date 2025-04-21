@@ -41,7 +41,7 @@ const selectAllMultiplayerController = async () => {
 				gameMultiplayerData.status = true
 				gameMultiplayerData.status_code = 200
 				gameMultiplayerData.items = responseData.length
-				gameMultiplayerData.games = responseData
+				gameMultiplayerData.multiplayers = responseData
 
 				return gameMultiplayerData
 			} else {
@@ -67,7 +67,7 @@ const selectByIdMultiplayerControler = async (id) => {
 				gameMultiplayerData.status = true
 				gameMultiplayerData.status_code = 200
 				gameMultiplayerData.message = 'Operação realizada com sucesso!'
-				gameMultiplayerData.jogo_encontrado = responseData
+				gameMultiplayerData.mulyiplayer_encontrado = responseData
 
 				return gameMultiplayerData
 			} else {

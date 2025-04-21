@@ -40,7 +40,7 @@ const selectAllGenreController = async () => {
 				gameGenreData.status = true
 				gameGenreData.status_code = 200
 				gameGenreData.items = responseData.length
-				gameGenreData.games = responseData
+				gameGenreData.genders = responseData
 
 				return gameGenreData
 			} else {
@@ -66,7 +66,7 @@ const selectByIdGenreControler = async (id) => {
 				gameGenreData.status = true
 				gameGenreData.status_code = 200
 				gameGenreData.message = 'Operação realizada com sucesso!'
-				gameGenreData.jogo_encontrado = responseData
+				gameGenreData.genero_encontrado = responseData
 
 				return gameGenreData
 			} else {

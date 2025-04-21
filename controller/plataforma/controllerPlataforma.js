@@ -48,7 +48,7 @@ const selectAllPlatformController = async () => {
 				gamePlatformData.status = true
 				gamePlatformData.status_code = 200
 				gamePlatformData.items = responseData.length
-				gamePlatformData.games = responseData
+				gamePlatformData.platforms = responseData
 
 				return gamePlatformData
 			} else {
@@ -74,7 +74,7 @@ const selectByIdPlatformController = async (id) => {
 				gamePlatformData.status = true
 				gamePlatformData.status_code = 200
 				gamePlatformData.message = 'Operação realizada com sucesso!'
-				gamePlatformData.jogo_encontrado = responseData
+				gamePlatformData.plataforma_encontrada = responseData
 
 				return gamePlatformData
 			} else {
