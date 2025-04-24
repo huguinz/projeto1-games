@@ -27,6 +27,26 @@ CREATE TABLE tbl_plataforma (
     ano_lancamento INT NOT NULL
 );
 
+CREATE TABLE tbl_faixa_etaria (
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    classificacao INT NOT NULL
+);
+
+CREATE TABLE tbl_estado (
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    uf VARCHAR(2) NOT NULL
+);
+
+CREATE TABLE tbl_pais (
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    pais VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE tbl_cidade (
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    cidade VARCHAR(145) NOT NULL
+);
+
 SHOW TABLES;
 SELECT * FROM tbl_plataforma;
 DESC tbl_plataforma;

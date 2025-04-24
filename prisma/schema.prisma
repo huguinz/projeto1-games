@@ -15,7 +15,7 @@ model tbl_jogo {
   tamanho         String?  @db.VarChar(10)
   descricao       String?  @db.Text
   foto_capa       String?  @db.VarChar(200)
-  link            String   @db.VarChar(200)
+  link            String?  @db.VarChar(200)
 }
 
 model tbl_genero {
@@ -37,4 +37,24 @@ model tbl_plataforma {
 model tbl_faixa_etaria {
   id            Int @id @default(autoincrement())
   classificacao Int
+}
+
+model tbl_teste {
+  id   Int    @id @default(autoincrement())
+  nome String
+}
+
+model tbl_estado {
+  id Int    @id @default(autoincrement())
+  uf String @db.VarChar(2)
+}
+
+model tbl_cidade {
+  id     Int    @id @default(autoincrement())
+  cidade String @db.VarChar(145)
+}
+
+model tbl_pais {
+  id   Int    @id @default(autoincrement())
+  pais String @db.VarChar(30)
 }
