@@ -30,7 +30,6 @@ const insertAgeGroupController = async (body, contentType) => {
 			return MESSAGE.ERROR_CONTENT_TYPE
 		}
 	} catch (error) {
-		console.log(error)
 		return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER
 	}
 }
@@ -62,11 +61,11 @@ const selectAllAgeGroupController = async () => {
 
 const selectByIdAgeGroupController = async (id) => {
 	try {
+		const responseDAO = await ageGroupDAO.selectByIdAgeGroup(id)
 		if (id === null || id === undefined || id <= 0 || isNaN(id)) {
 			return MESSAGE.ERROR_REQUIRED_FIELDS
 		} else if (responseDAO !== false && typeof responseDAO === 'object') {
 			id = parseInt(id)
-			const responseDAO = await ageGroupDAO.selectByIdAgeGroup(id)
 			if (responseDAO.length <= 0) {
 				return MESSAGE.ERROR_NOT_FOUND
 			} else {
