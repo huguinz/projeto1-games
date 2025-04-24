@@ -31,6 +31,8 @@ const controllerGenero = require('./controller/genero/controllerGenero.js')
 const controllerMultiplayer = require('./controller/multiplayer/controllerMultiplayer.js')
 const controllerPlatform = require('./controller/plataforma/controllerPlataforma.js')
 const controllerAgeGroup = require('./controller/faixa_etaria/controllerAgeGroup.js')
+const controllerState = require('./controller/estado/controllerState.js')
+const controllerCountry = require('./controller/pais/controllerPais.js')
 
 //Estabelecendo o formato de dados que deverá chegar no body da requisição (POST ou PUT)
 const bodyParserJSON = bodyParser.json()
@@ -271,6 +273,92 @@ app.put('/v1/controle-jogos/jogo/faixa-etaria/update/:id', cors(), bodyParserJSO
 	const body = request.body
 
 	const responseController = await controllerAgeGroup.updateAgeGroupController(body, idAgeGroup, contentType)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.post('/v1/controle-jogos/empresa/estado', cors(), bodyParserJSON, async (request, response) => {
+	const contentType = request.headers['content-type']
+	const data = request.body
+	const responseController = await controllerState.insertStateController(data, contentType)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.get('/v1/controle-jogos/empresa/estado/select', cors(), async (request, response) => {
+	const responseController = await controllerState.selectAllStateController()
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.get('/v1/controle-jogos/empresa/estado/select/:id', cors(), async (request, response) => {
+	const idState = request.params.id
+	const responseController = await controllerState.selectByIdStateController(idState)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.delete('/v1/controle-jogos/empresa/estado/delete/:id', cors(), async (request, response) => {
+	const idState = request.params.id
+	const responseController = await controllerState.deleteStateController(idState)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.put('/v1/controle-jogos/empresa/estado/update/:id', cors(), bodyParserJSON, async (request, response) => {
+	const idState = request.params.id
+	const contentType = request.headers['content-type']
+	const body = request.body
+
+	const responseController = await controllerState.updateStateController(body, idState, contentType)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.post('/v1/controle-jogos/empresa/pais', cors(), bodyParserJSON, async (request, response) => {
+	const contentType = request.headers['content-type']
+	const data = request.body
+	const responseController = await controllerCountry.insertCountryController(data, contentType)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.get('/v1/controle-jogos/empresa/pais/select', cors(), async (request, response) => {
+	const responseController = await controllerCountry.selectAllCountryController()
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.get('/v1/controle-jogos/empresa/pais/select/:id', cors(), async (request, response) => {
+	const idCountry = request.params.id
+	const responseController = await controllerCountry.selectByIdCountryController(idCountry)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.delete('/v1/controle-jogos/empresa/pais/delete/:id', cors(), async (request, response) => {
+	const idCountry = request.params.id
+	const responseController = await controllerCountry.deleteCountryController(idCountry)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.put('/v1/controle-jogos/empresa/pais/update/:id', cors(), bodyParserJSON, async (request, response) => {
+	const idCountry = request.params.id
+	const contentType = request.headers['content-type']
+	const body = request.body
+
+	const responseController = await controllerCountry.updateCountryController(body, idCountry, contentType)
 
 	response.status(responseController.status_code)
 	response.json(responseController)
