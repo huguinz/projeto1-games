@@ -113,7 +113,7 @@ const updateGenreController = async (gameGenre, id, contentType) => {
 				gameGenre.nome === '' ||
 				gameGenre.nome === undefined ||
 				gameGenre.nome === null ||
-				gameGenre.nome > 45 ||
+				gameGenre.nome.length > 45 ||
 				id === null ||
 				id === undefined ||
 				id <= 0 ||
