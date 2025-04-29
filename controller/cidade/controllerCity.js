@@ -66,7 +66,7 @@ const selectByIdCityController = async (id) => {
 				data.status = true
 				data.status_code = 200
 				data.message = 'Operação realizada com sucesso!'
-				data.pais_encontrado = responseDAO
+				data.cidade_encontrada = responseDAO
 
 				return data
 			}

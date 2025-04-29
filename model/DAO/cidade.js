@@ -10,7 +10,7 @@ const prisma = new PrismaClient()
 
 const insertCity = async (body) => {
 	try {
-		const sql = `INSERT INTO tbl_cidade (pais) VALUES ('${body.cidade}') `
+		const sql = `INSERT INTO tbl_cidade (cidade) VALUES ('${body.cidade}') `
 		const resultDatabase = await prisma.$executeRawUnsafe(sql)
 
 		return resultDatabase ? resultDatabase : false
@@ -55,7 +55,7 @@ const deleteCity = async (id) => {
 const updateCity = async (body) => {
 	try {
 		const sql = `UPDATE tbl_cidade SET
-                                            pais = '${body.cidade}'
+                                            cidade = '${body.cidade}'
                                             WHERE ID = ${body.id}`
 		const response = await prisma.$executeRawUnsafe(sql)
 

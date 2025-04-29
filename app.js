@@ -33,6 +33,7 @@ const controllerPlatform = require('./controller/plataforma/controllerPlataforma
 const controllerAgeGroup = require('./controller/faixa_etaria/controllerAgeGroup.js')
 const controllerState = require('./controller/estado/controllerState.js')
 const controllerCountry = require('./controller/pais/controllerPais.js')
+const controllerCity = require('./controller/cidade/controllerCity.js')
 
 //Estabelecendo o formato de dados que deverá chegar no body da requisição (POST ou PUT)
 const bodyParserJSON = bodyParser.json()
@@ -359,6 +360,49 @@ app.put('/v1/controle-jogos/empresa/pais/update/:id', cors(), bodyParserJSON, as
 	const body = request.body
 
 	const responseController = await controllerCountry.updateCountryController(body, idCountry, contentType)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.post('/v1/controle-jogos/empresa/cidade', cors(), bodyParserJSON, async (request, response) => {
+	const contentType = request.headers['content-type']
+	const data = request.body
+	const responseController = await controllerCity.insertCityController(data, contentType)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.get('/v1/controle-jogos/empresa/cidade/select', cors(), async (request, response) => {
+	const responseController = await controllerCountry.selectAllCountryController()
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.get('/v1/controle-jogos/empresa/cidade/select/:id', cors(), async (request, response) => {
+	const idCity = request.params.id
+	const responseController = await controllerCity.selectByIdCityController(idCity)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.delete('/v1/controle-jogos/empresa/cidade/delete/:id', cors(), async (request, response) => {
+	const idCity = request.params.id
+	const responseController = await controllerCity.deleteCityController(idCity)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.put('/v1/controle-jogos/empresa/cidade/update/:id', cors(), bodyParserJSON, async (request, response) => {
+	const idCity = request.params.id
+	const contentType = request.headers['content-type']
+	const body = request.body
+
+	const responseController = await controllerCity.updateCityController(body, idCity, contentType)
 
 	response.status(responseController.status_code)
 	response.json(responseController)
