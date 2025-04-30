@@ -375,7 +375,7 @@ app.post('/v1/controle-jogos/empresa/cidade', cors(), bodyParserJSON, async (req
 })
 
 app.get('/v1/controle-jogos/empresa/cidade/select', cors(), async (request, response) => {
-	const responseController = await controllerCountry.selectAllCountryController()
+	const responseController = await controllerCity.selectAllCityController()
 
 	response.status(responseController.status_code)
 	response.json(responseController)
