@@ -35,7 +35,9 @@ const inserirJogo = async (jogo, contentType) => {
 				jogo.foto_capa.length > 200 ||
 				jogo.link == undefined ||
 				jogo.link.length > 200 ||
-				jogo.link == null
+				jogo.link == null ||
+				jogo.foto_banner == undefined ||
+				jogo.foto_banner.length > 200
 			) {
 				return MESSAGE.ERROR_REQUIRED_FIELDS //400
 			} else {
@@ -80,6 +82,8 @@ const atualizarJogo = async (jogo, id, contentType) => {
 				jogo.foto_capa.length > 200 ||
 				jogo.link == undefined ||
 				jogo.link.length > 200 ||
+				jogo.foto_banner == undefined ||
+				jogo.foto_banner.length > 200 ||
 				id == undefined ||
 				id == '' ||
 				id == null ||
