@@ -16,9 +16,60 @@ model tbl_jogo {
   descricao       String?  @db.Text
   foto_capa       String?  @db.VarChar(200)
   link            String   @db.VarChar(200)
+  foto_banner     String?  @db.VarChar(200)
 }
 
 model tbl_cidade {
   id     Int    @id @default(autoincrement())
   cidade String @db.VarChar(145)
+}
+
+model tbl_estado {
+  id Int    @id @default(autoincrement())
+  uf String @db.VarChar(2)
+}
+
+model tbl_faixa_etaria {
+  id            Int @id @default(autoincrement())
+  classificacao Int
+}
+
+model tbl_genero {
+  id   Int    @id @default(autoincrement())
+  nome String @db.VarChar(45)
+}
+
+model tbl_multiplayer {
+  id        Int    @id @default(autoincrement())
+  modo_jogo String @db.VarChar(45)
+}
+
+model tbl_pais {
+  id   Int    @id @default(autoincrement())
+  pais String @db.VarChar(30)
+}
+
+model tbl_plataforma {
+  id             Int    @id @default(autoincrement())
+  nome           String @db.VarChar(45)
+  ano_lancamento Int
+}
+
+model tbl_empresa {
+  id            Int            @id @default(autoincrement())
+  nome          String         @db.VarChar(255)
+  site          String?        @db.VarChar(45)
+  descricao     String?        @db.Text
+  data_fundacao DateTime       @db.Date
+  email_contato String?        @db.VarChar(255)
+  tbl_telefone  tbl_telefone[]
+}
+
+model tbl_telefone {
+  id          Int         @id @default(autoincrement())
+  telefone    String?     @db.VarChar(45)
+  id_empresa  Int
+  tbl_empresa tbl_empresa @relation(fields: [id_empresa], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_telefone_empresa")
+
+  @@index([id_empresa], map: "fk_telefone_empresa")
 }
