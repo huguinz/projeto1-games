@@ -103,22 +103,25 @@ const insertEnterpriseController = async (body, contentType) => {
 const selectAllEnterpriseController = async () => {
 	try {
 		const responseDAO = await enterpriseDAO.selectAllEnterprise()
+		const getAllTelephones = await tellphoneDAO.selectAllTelephone()
 
 		if (responseDAO !== false && typeof responseDAO === 'object') {
 			if (responseDAO.length < 1) {
 				return MESSAGE.ERROR_NOT_FOUND
 			} else {
 				const data = {}
-				const tellphones = []
 
 				data.status = true
 				data.status_code = 200
 				data.items = responseDAO.length
 				data.enterprises = responseDAO
 
-				for (const tellphone of responseDAO) {
-				}
-				data.tellphones = tellphones
+				responseDAO.forEach((enterprise) => {
+					console.log(enterprise)
+					console.log(responseDAO)
+					const pushTelephones = []
+					getAllTelephones.forEach((telephone) => {})
+				})
 
 				return data
 			}
