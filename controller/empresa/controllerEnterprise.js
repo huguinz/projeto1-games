@@ -7,7 +7,7 @@
 
 const MESSAGE = require('../../modulo/config.js')
 const enterpriseDAO = require('../../model/DAO/empresa.js')
-const tellphoneDAO = require('../../model/DAO/telefone.js')
+const telephoneDAO = require('../../model/DAO/telefone.js')
 const controllerTelephone = require('./controllerTelephone.js')
 
 const insertEnterpriseController = async (body, contentType) => {
@@ -103,7 +103,7 @@ const insertEnterpriseController = async (body, contentType) => {
 const selectAllEnterpriseController = async () => {
 	try {
 		const responseDAO = await enterpriseDAO.selectAllEnterprise()
-		const getAllTelephones = await tellphoneDAO.selectAllTelephone()
+		const getAllTelephones = await telephoneDAO.selectAllTelephone()
 
 		if (responseDAO !== false && typeof responseDAO === 'object') {
 			if (responseDAO.length < 1) {
@@ -117,10 +117,15 @@ const selectAllEnterpriseController = async () => {
 				data.enterprises = responseDAO
 
 				responseDAO.forEach((enterprise) => {
-					console.log(enterprise)
-					console.log(responseDAO)
 					const pushTelephones = []
-					getAllTelephones.forEach((telephone) => {})
+
+					getAllTelephones.forEach((telephone) => {
+						if (enterprise.id === telephone.id_empresa) {
+							pushTelephones.push(telephone)
+							delete telephone.id_empresa
+						}
+					})
+					enterprise.telefones = pushTelephones
 				})
 
 				return data
@@ -145,12 +150,25 @@ const selectByIdEnterpriseController = async (id) => {
 				if (responseDAO.length <= 0) {
 					return MESSAGE.ERROR_NOT_FOUND
 				} else {
+					const getAllTelephones = await telephoneDAO.selectAllTelephone()
 					const data = {}
 
-					data.status = true
-					data.status_code = 200
-					data.message = 'Operação realizada com sucesso!'
-					data.empresa_encontrada = responseDAO
+					responseDAO.forEach((enterprise) => {
+						const pushTelephones = []
+
+						data.status = true
+						data.status_code = 200
+						data.message = 'Operação realizada com sucesso!'
+						data.empresa_encontrada = responseDAO
+
+						getAllTelephones.forEach((telephone) => {
+							if (id === telephone.id_empresa) {
+								pushTelephones.push(telephone)
+								delete telephone.id_empresa
+							}
+						})
+						enterprise.telefones = pushTelephones
+					})
 
 					return data
 				}
@@ -173,8 +191,15 @@ const deleteEnterpriseController = async (id) => {
 
 			if (isIdExists !== false && typeof isIdExists === 'object') {
 				if (isIdExists.length === 1) {
-					const responseDAO = await enterpriseDAO.deleteEnterprise(id)
+					const getReferencedTelephones = await telephoneDAO.selectAllTelephone()
 
+					for (const telephones of getReferencedTelephones) {
+						if (id === telephones.id_empresa) {
+							await telephoneDAO.deleteTelephone(telephones.id)
+						}
+					}
+
+					const responseDAO = await enterpriseDAO.deleteEnterprise(id)
 					return responseDAO ? MESSAGE.SUCCESS_DELETED_ITEM : MESSAGE.ERROR_INTERNAL_SERVER_MODEL
 				} else {
 					return MESSAGE.ERROR_NOT_FOUND
@@ -220,11 +245,14 @@ const updateEnterpriseController = async (body, id, contentType) => {
 				body.nome.trim() === '' ||
 				body.nome.length > 255 ||
 				typeof body.nome !== 'string' ||
+				!Array.isArray(body.telefone) ||
 				body.site === undefined ||
 				body.site === null ||
 				body.site.length > 45 ||
+				typeof body.site !== 'string' ||
 				body.descricao === undefined ||
 				body.descricao === null ||
+				typeof body.descricao !== 'string' ||
 				body.data_fundacao === undefined ||
 				body.data_fundacao === null ||
 				!formatDate(body.data_fundacao) ||
@@ -251,7 +279,37 @@ const updateEnterpriseController = async (body, id, contentType) => {
 					body.id = id
 					const responseDAO = await enterpriseDAO.updateEnterprise(body)
 
-					return responseDAO ? MESSAGE.SUCCESS_UPDATED_ITEM : MESSAGE.ERROR_INTERNAL_SERVER_MODEL
+					if (!body.telefone.length) {
+						return MESSAGE.SUCCESS_UPDATED_ITEM
+					}
+
+					if (responseDAO) {
+						const getAllTelephones = await telephoneDAO.selectAllTelephone()
+						for (const telephones of body.telefone) {
+							const updateTelephoneData = {
+								telefone: [telephones],
+								id_empresa: id
+							}
+							for (const telephones of getAllTelephones) {
+								if (id === telephones.id_empresa) {
+									const telephoneID = telephones.id
+									const validateUpdateTelephone = await controllerTelephone.updateTelephoneController(
+										updateTelephoneData,
+										telephoneID,
+										'application/json'
+									)
+
+									if (!validateUpdateTelephone.status) {
+										return validateUpdateTelephone
+									}
+								}
+							}
+						}
+
+						return MESSAGE.SUCCESS_UPDATED_ITEM
+					} else {
+						return MESSAGE.ERROR_INTERNAL_SERVER_MODEL
+					}
 				} else if (isIdExists.length < 1) {
 					return MESSAGE.ERROR_NOT_FOUND
 				} else {

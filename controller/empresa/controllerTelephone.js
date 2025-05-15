@@ -162,9 +162,8 @@ const updateTelephoneController = async (body, id, contentType) => {
 			if (
 				body.telefone === undefined ||
 				body.telefone === null ||
-				!validateNumber.test(body.telefone) ||
-				body.telefone.length > 30 ||
-				typeof body.telefone !== 'string' ||
+				!Array.isArray(body.telefone) ||
+				body.telefone.length < 1 ||
 				body.id_empresa === undefined ||
 				body.id_empresa === null ||
 				body.id_empresa <= 0 ||
@@ -184,10 +183,20 @@ const updateTelephoneController = async (body, id, contentType) => {
 					if (validateEnterpriseID.length < 1) {
 						return MESSAGE.ERROR_NOT_FOUND
 					} else {
-						body.id = id
-						const responseTelephoneDAO = await telephoneDAO.updateTelephone(body)
+						for (const telephones of body.telefone) {
+							if (typeof telephones !== 'string' || telephones.length > 30 || !validateNumber.test(telephones)) {
+								return MESSAGE.ERROR_REQUIRED_FIELDS
+							} else {
+								body.telefone = telephones
+								body.id = id
 
-						return responseTelephoneDAO ? MESSAGE.SUCCESS_UPDATED_ITEM : MESSAGE.ERROR_INTERNAL_SERVER_MODEL
+								const responseTelephoneDAO = await telephoneDAO.updateTelephone(body)
+
+								if (!responseTelephoneDAO) return MESSAGE.ERROR_INTERNAL_SERVER_MODEL
+							}
+						}
+
+						return MESSAGE.SUCCESS_UPDATED_ITEM
 					}
 				} else if (isIdExists.length < 1) {
 					return MESSAGE.ERROR_NOT_FOUND
