@@ -7,6 +7,7 @@
 
 const MESSAGE = require('../../modulo/config.js')
 const enterpriseDAO = require('../../model/DAO/empresa.js')
+const tellphoneDAO = require('../../model/DAO/telefone.js')
 const controllerTelephone = require('./controllerTelephone.js')
 
 const insertEnterpriseController = async (body, contentType) => {
@@ -41,17 +42,21 @@ const insertEnterpriseController = async (body, contentType) => {
 				body.nome.trim() === '' ||
 				body.nome.length > 255 ||
 				typeof body.nome !== 'string' ||
+				!Array.isArray(body.telefone) ||
 				body.site === undefined ||
 				body.site === null ||
 				body.site.length > 45 ||
+				typeof body.site !== 'string' ||
 				body.descricao === undefined ||
 				body.descricao === null ||
+				typeof body.descricao !== 'string' ||
 				body.data_fundacao === undefined ||
 				body.data_fundacao === null ||
 				!formatDate(body.data_fundacao) ||
 				body.email_contato === undefined ||
 				body.email_contato === null ||
-				body.email_contato.length > 255
+				body.email_contato.length > 255 ||
+				typeof body.email_contato !== 'string'
 			) {
 				return MESSAGE.ERROR_REQUIRED_FIELDS
 			} else {
@@ -61,6 +66,9 @@ const insertEnterpriseController = async (body, contentType) => {
 				body.data_fundacao = formatDate(body.data_fundacao)
 
 				const responseDAO = await enterpriseDAO.insertEnterprise(body)
+				if (!body.telefone.length) {
+					return MESSAGE.SUCCESS_CREATED_ITEM
+				}
 
 				if (responseDAO) {
 					const dataInsertNumber = {}
@@ -101,11 +109,16 @@ const selectAllEnterpriseController = async () => {
 				return MESSAGE.ERROR_NOT_FOUND
 			} else {
 				const data = {}
+				const tellphones = []
 
 				data.status = true
 				data.status_code = 200
 				data.items = responseDAO.length
 				data.enterprises = responseDAO
+
+				for (const tellphone of responseDAO) {
+				}
+				data.tellphones = tellphones
 
 				return data
 			}

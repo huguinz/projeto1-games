@@ -17,9 +17,8 @@ const insertTelephoneController = async (body, contentType) => {
 			if (
 				body.telefone === undefined ||
 				body.telefone === null ||
-				!validateNumber.test(body.telefone) ||
-				body.telefone.length > 30 ||
-				typeof body.telefone !== 'string' ||
+				!Array.isArray(body.telefone) ||
+				body.telefone.length < 1 ||
 				body.id_empresa === undefined ||
 				body.id_empresa === null ||
 				body.id_empresa <= 0 ||
@@ -32,9 +31,18 @@ const insertTelephoneController = async (body, contentType) => {
 				if (validateEnterpriseID.length < 1) {
 					return MESSAGE.ERROR_NOT_FOUND
 				} else {
-					const responseTelephoneDAO = await telephoneDAO.insertTelephone(body)
+					for (const telephones of body.telefone) {
+						if (typeof telephones !== 'string' || telephones.length > 30 || !validateNumber.test(telephones)) {
+							return MESSAGE.ERROR_REQUIRED_FIELDS
+						} else {
+							body.telefone = telephones
+							const responseTelephoneDAO = await telephoneDAO.insertTelephone(body)
 
-					return responseTelephoneDAO ? MESSAGE.SUCCESS_CREATED_ITEM : MESSAGE.ERROR_INTERNAL_SERVER_MODEL
+							if (!responseTelephoneDAO) return MESSAGE.ERROR_INTERNAL_SERVER_MODEL
+						}
+					}
+
+					return MESSAGE.SUCCESS_CREATED_ITEM
 				}
 			}
 		} else {
