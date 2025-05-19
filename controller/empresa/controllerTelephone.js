@@ -19,6 +19,7 @@ const insertTelephoneController = async (body, contentType) => {
 				body.telefone === null ||
 				!Array.isArray(body.telefone) ||
 				body.telefone.length < 1 ||
+				body.telefone.length > 4 ||
 				body.id_empresa === undefined ||
 				body.id_empresa === null ||
 				body.id_empresa <= 0 ||
@@ -164,6 +165,7 @@ const updateTelephoneController = async (body, id, contentType) => {
 				body.telefone === null ||
 				!Array.isArray(body.telefone) ||
 				body.telefone.length < 1 ||
+				body.telefone.length > 4 ||
 				body.id_empresa === undefined ||
 				body.id_empresa === null ||
 				body.id_empresa <= 0 ||

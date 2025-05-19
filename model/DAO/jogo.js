@@ -124,11 +124,22 @@ const selectByIdJogo = async (id) => {
 	}
 }
 
+const selectLastGame = async () => {
+	try {
+		const sql = 'SELECT * FROM tbl_jogo ORDER BY ID DESC LIMIT 1'
+		const result = await prisma.$queryRawUnsafe(sql)
+
+		return result ? result : false
+	} catch (error) {
+		return false
+	}
+}
+
 module.exports = {
 	insertJogo,
 	updateJogo,
 	deleteJogo,
 	selectAllJogo,
-	selectAllJogo,
-	selectByIdJogo
+	selectByIdJogo,
+	selectLastGame
 }

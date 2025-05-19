@@ -246,6 +246,7 @@ const updateEnterpriseController = async (body, id, contentType) => {
 				body.nome.length > 255 ||
 				typeof body.nome !== 'string' ||
 				!Array.isArray(body.telefone) ||
+				body.telefone.length > 4 ||
 				body.site === undefined ||
 				body.site === null ||
 				body.site.length > 45 ||
@@ -279,31 +280,76 @@ const updateEnterpriseController = async (body, id, contentType) => {
 					body.id = id
 					const responseDAO = await enterpriseDAO.updateEnterprise(body)
 
-					if (!body.telefone.length) {
+					if (!body.telefone.length && responseDAO) {
 						return MESSAGE.SUCCESS_UPDATED_ITEM
 					}
 
 					if (responseDAO) {
 						const getAllTelephones = await telephoneDAO.selectAllTelephone()
-						for (const telephones of body.telefone) {
+						const updateTelephoneObject = []
+						let indexIdTelephone = 0
+						let contTelephone = 0
+
+						const telephonesData = () => {
 							const updateTelephoneData = {
-								telefone: [telephones],
+								telefone: '',
 								id_empresa: id
 							}
+
+							for (const enterpriseTelephones of body.telefone) {
+								updateTelephoneObject.push(enterpriseTelephones)
+
+								updateTelephoneData.telefone = updateTelephoneObject
+							}
+							return updateTelephoneData
+						}
+
+						const telephonesDataResult = telephonesData()
+
+						const telephonesID = () => {
+							const IDs = []
+
 							for (const telephones of getAllTelephones) {
 								if (id === telephones.id_empresa) {
 									const telephoneID = telephones.id
-									const validateUpdateTelephone = await controllerTelephone.updateTelephoneController(
-										updateTelephoneData,
-										telephoneID,
-										'application/json'
-									)
-
-									if (!validateUpdateTelephone.status) {
-										return validateUpdateTelephone
-									}
+									IDs.push(telephoneID)
 								}
 							}
+							return IDs
+						}
+
+						for (const item of telephonesDataResult.telefone) {
+							contTelephone++
+
+							if (contTelephone > telephonesID().length) {
+								const filterInsertData = {
+									telefone: [item],
+									id_empresa: telephonesDataResult.id_empresa
+								}
+
+								const insertTelephone = await controllerTelephone.insertTelephoneController(filterInsertData, 'application/json')
+
+								if (!insertTelephone.status) {
+									return insertTelephone
+								}
+							} else {
+								const filterUpdateData = {
+									telefone: [item],
+									id_empresa: telephonesDataResult.id_empresa
+								}
+
+								const updateTelephone = await controllerTelephone.updateTelephoneController(
+									filterUpdateData,
+									telephonesID()[indexIdTelephone],
+									'application/json'
+								)
+
+								if (!updateTelephone.status) {
+									return updateTelephone
+								}
+							}
+
+							indexIdTelephone++
 						}
 
 						return MESSAGE.SUCCESS_UPDATED_ITEM

@@ -43,7 +43,17 @@ const selectByIdGenre = async (id) => {
 
 		return result ? result : false
 	} catch (error) {
-		console.log(error)
+		return false
+	}
+}
+
+const selectByGenreName = async (name) => {
+	try {
+		const sql = `SELECT * FROM tbl_genero WHERE nome = '${name}'`
+		const result = await prisma.$queryRawUnsafe(sql)
+
+		return result ? result : false
+	} catch (error) {
 		return false
 	}
 }
@@ -55,7 +65,6 @@ const deleteGenre = async (id) => {
 
 		return result ? result : false
 	} catch (error) {
-		console.log(error)
 		return false
 	}
 }
@@ -67,7 +76,32 @@ const updateGenre = async (gameGenre) => {
 
 		return result ? result : false
 	} catch (error) {
-		console.log(error)
+		return false
+	}
+}
+
+const selectGenreByGame = async (id) => {
+	try {
+		const sql = `SELECT 
+						tj.nome AS nome_jogo,
+						tg.id,
+						tjg.id AS id_jogo_genero,
+    					tg.nome AS genero
+					FROM 
+						tbl_jogo_genero AS tjg 
+					INNER JOIN
+						tbl_jogo AS tj
+					ON
+						tjg.id_jogo = tj.id
+					INNER JOIN 
+						tbl_genero AS tg
+					ON 
+						tjg.id_genero = tg.id WHERE tj.id = ${id}`
+
+		const result = await prisma.$queryRawUnsafe(sql)
+
+		return result ? result : false
+	} catch (error) {
 		return false
 	}
 }
@@ -76,6 +110,8 @@ module.exports = {
 	insertGenre,
 	selectAllGenre,
 	selectByIdGenre,
+	selectByGenreName,
 	deleteGenre,
-	updateGenre
+	updateGenre,
+	selectGenreByGame
 }

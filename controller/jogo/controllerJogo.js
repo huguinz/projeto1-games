@@ -10,53 +10,8 @@ const MESSAGE = require('../../modulo/config.js')
 
 //Import do DAO para realizar o CRUD no BD
 const jogoDAO = require('../../model/DAO/jogo.js')
-
-//Função para inserir um novo jogo
-const inserirJogo = async (jogo, contentType) => {
-	try {
-		if (contentType == 'application/json') {
-			if (
-				jogo.nome == undefined ||
-				jogo.nome == '' ||
-				jogo.nome == null ||
-				jogo.nome.length > 80 ||
-				jogo.data_lancamento == undefined ||
-				jogo.data_lancamento == '' ||
-				jogo.data_lancamento == null ||
-				jogo.data_lancamento.length > 10 ||
-				jogo.versao == undefined ||
-				jogo.versao == '' ||
-				jogo.versao == null ||
-				jogo.versao.length > 10 ||
-				jogo.tamanho == undefined ||
-				jogo.tamanho.length > 10 ||
-				jogo.descricao == undefined ||
-				jogo.foto_capa == undefined ||
-				jogo.foto_capa.length > 200 ||
-				jogo.link == undefined ||
-				jogo.link.length > 200 ||
-				jogo.link == null ||
-				jogo.foto_banner == undefined ||
-				jogo.foto_banner.length > 200
-			) {
-				return MESSAGE.ERROR_REQUIRED_FIELDS //400
-			} else {
-				//Encaminha os dados do novo jogo para ser inserido no BD
-				let resultJogo = await jogoDAO.insertJogo(jogo)
-
-				if (resultJogo) {
-					return MESSAGE.SUCCESS_CREATED_ITEM //201
-				} else {
-					return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
-				}
-			}
-		} else {
-			return MESSAGE.ERROR_CONTENT_TYPE
-		}
-	} catch (error) {
-		return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER
-	}
-}
+const generoDAO = require('../../model/DAO/genero.js')
+const jogoGeneroController = require('./controllerJogoGenero.js')
 
 //Funçao para atualizar jogo
 const atualizarJogo = async (jogo, id, contentType) => {
@@ -130,6 +85,17 @@ const excluirJogo = async (id) => {
 
 			if (resultJogo != false || typeof resultJogo == 'object') {
 				if (resultJogo.length > 0) {
+					const getGameGenres = await generoDAO.selectGenreByGame(id)
+
+					for (const genres of getGameGenres) {
+						const idGameAndGenre = genres.id_jogo_genero
+						const deleteGameAndGenre = await jogoGeneroController.deleteGameAndGenreController(idGameAndGenre)
+
+						if (!deleteGameAndGenre.status) {
+							return MESSAGE.ERROR_INTERNAL_SERVER_MODEL
+						}
+					}
+
 					let result = await jogoDAO.deleteJogo(id)
 
 					if (result) {
@@ -165,6 +131,16 @@ const listarJogo = async () => {
 				dadosJogos.items = resultJogo.length
 				dadosJogos.games = resultJogo
 
+				for (const generos of resultJogo) {
+					const genreGame = await generoDAO.selectGenreByGame(generos.id)
+
+					genreGame.forEach((item) => {
+						delete item.nome_jogo
+					})
+
+					generos.generos = genreGame
+				}
+
 				return dadosJogos //200
 			} else {
 				return MESSAGE.ERROR_NOT_FOUND //404
@@ -194,6 +170,16 @@ const buscarJogo = async (id) => {
 				dadosJogos.message = 'Operação realizada com sucesso!'
 				dadosJogos.jogo_encontrado = resultJogo
 
+				for (const generos of resultJogo) {
+					const genreGame = await generoDAO.selectGenreByGame(generos.id)
+
+					genreGame.forEach((item) => {
+						delete item.nome_jogo
+					})
+
+					generos.generos = genreGame
+				}
+
 				return dadosJogos
 			} else {
 				return MESSAGE.ERROR_NOT_FOUND
@@ -206,10 +192,80 @@ const buscarJogo = async (id) => {
 	}
 }
 
+//Função para inserir um novo jogo
+const inserirJogo = async (jogo, contentType) => {
+	try {
+		if (contentType == 'application/json') {
+			if (
+				jogo.nome == undefined ||
+				jogo.nome == '' ||
+				jogo.nome == null ||
+				jogo.nome.length > 80 ||
+				jogo.data_lancamento == undefined ||
+				jogo.data_lancamento == '' ||
+				jogo.data_lancamento == null ||
+				jogo.data_lancamento.length > 10 ||
+				jogo.versao == undefined ||
+				jogo.versao == '' ||
+				jogo.versao == null ||
+				jogo.versao.length > 10 ||
+				jogo.tamanho == undefined ||
+				jogo.tamanho.length > 10 ||
+				jogo.descricao == undefined ||
+				jogo.foto_capa == undefined ||
+				jogo.foto_capa.length > 200 ||
+				jogo.link == undefined ||
+				jogo.link.length > 200 ||
+				jogo.link == null ||
+				jogo.foto_banner == undefined ||
+				jogo.foto_banner.length > 200 ||
+				jogo.genero == undefined ||
+				jogo.genero == null ||
+				!Array.isArray(jogo.genero) ||
+				!jogo.genero.length
+			) {
+				return MESSAGE.ERROR_REQUIRED_FIELDS //400
+			} else {
+				for (let genre of jogo.genero) {
+					genre = genre.toUpperCase()
+					const getGenre = await generoDAO.selectByGenreName(genre)
+
+					if (getGenre.length < 1 || !getGenre) {
+						return MESSAGE.ERROR_REQUIRED_FIELDS
+					}
+				}
+
+				//Encaminha os dados do novo jogo para ser inserido no BD
+				let resultJogo = await jogoDAO.insertJogo(jogo)
+
+				if (resultJogo) {
+					const dataInsertGameAndGenre = {}
+					const getGameID = await jogoDAO.selectLastGame()
+
+					getGameID.forEach((game) => {
+						dataInsertGameAndGenre.id_jogo = game.id
+						dataInsertGameAndGenre.genero = jogo.genero
+					})
+
+					const createGenre = await jogoGeneroController.insertGameAndGenreController(dataInsertGameAndGenre, 'application/json')
+
+					return createGenre.status ? MESSAGE.SUCCESS_CREATED_ITEM : createGenre
+				} else {
+					return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
+				}
+			}
+		} else {
+			return MESSAGE.ERROR_CONTENT_TYPE
+		}
+	} catch (error) {
+		return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER
+	}
+}
+
 module.exports = {
-	inserirJogo,
 	atualizarJogo,
 	excluirJogo,
 	listarJogo,
-	buscarJogo
+	buscarJogo,
+	inserirJogo
 }
