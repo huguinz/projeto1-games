@@ -12,6 +12,7 @@ const MESSAGE = require('../../modulo/config.js')
 const jogoDAO = require('../../model/DAO/jogo.js')
 const generoDAO = require('../../model/DAO/genero.js')
 const jogoGeneroController = require('./controllerJogoGenero.js')
+const jogoEmpresaController = require('./controllerJogoEmpresa.js')
 
 //Funçao para atualizar jogo
 const atualizarJogo = async (jogo, id, contentType) => {
@@ -222,7 +223,11 @@ const inserirJogo = async (jogo, contentType) => {
 				jogo.genero == undefined ||
 				jogo.genero == null ||
 				!Array.isArray(jogo.genero) ||
-				!jogo.genero.length
+				!jogo.genero.length ||
+				jogo.empresa == undefined ||
+				jogo.empresa == null ||
+				!Array.isArray(jogo.empresa) ||
+				!jogo.empresa.length
 			) {
 				return MESSAGE.ERROR_REQUIRED_FIELDS //400
 			} else {
@@ -240,16 +245,32 @@ const inserirJogo = async (jogo, contentType) => {
 
 				if (resultJogo) {
 					const dataInsertGameAndGenre = {}
+					const dataInsertGameAndEnterprise = {}
 					const getGameID = await jogoDAO.selectLastGame()
 
 					getGameID.forEach((game) => {
 						dataInsertGameAndGenre.id_jogo = game.id
 						dataInsertGameAndGenre.genero = jogo.genero
+
+						dataInsertGameAndEnterprise.id_jogo = game.id
+						dataInsertGameAndEnterprise.empresa = jogo.empresa
 					})
 
 					const createGenre = await jogoGeneroController.insertGameAndGenreController(dataInsertGameAndGenre, 'application/json')
+					if (createGenre.status) {
+						const createEnterprise = await jogoEmpresaController.insertGameAndEnterpriseController(
+							dataInsertGameAndEnterprise,
+							'application/json'
+						)
 
-					return createGenre.status ? MESSAGE.SUCCESS_CREATED_ITEM : createGenre
+						if (createEnterprise.status) {
+							return MESSAGE.SUCCESS_CREATED_ITEM
+						} else {
+							return createEnterprise
+						}
+					} else {
+						return createGenre
+					}
 				} else {
 					return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
 				}

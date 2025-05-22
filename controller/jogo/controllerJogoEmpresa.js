@@ -29,27 +29,30 @@ const insertGameAndEnterpriseController = async (body, contentType) => {
 			} else {
 				const validateGameID = await gameDAO.selectByIdJogo(id_jogo)
 
-				if (validateGameID.length < 1) {
+				if (!validateGameID.length) {
 					return MESSAGE.ERROR_NOT_FOUND
 				} else {
-					const allowedGenres = []
+					const existsEnterprise = []
 
-					for (let genre of empresa) {
-						genre = genre.toUpperCase()
-						const getGenre = await enterpriseDAO.selectByGenreName(genre)
+					for (const enterpriseID of empresa) {
+						const getEnterprise = await enterpriseDAO.selectByIdEnterprise(enterpriseID)
 
-						getGenre.forEach((item) => {
-							allowedGenres.push(item)
+						if (!getEnterprise.length) {
+							return MESSAGE.ERROR_NOT_FOUND
+						}
+
+						getEnterprise.forEach((item) => {
+							existsEnterprise.push(item)
 						})
 					}
 
-					for (const insertGenres of allowedGenres) {
+					for (const insertEnterprises of existsEnterprise) {
 						const data = {
 							id_jogo: id_jogo,
-							id_genero: insertGenres.id
+							id_empresa: insertEnterprises.id
 						}
 
-						const responseDAO = await gameAndEnterpriseDAO.insertGameAndGenre(data)
+						const responseDAO = await gameAndEnterpriseDAO.insertGameAndEnterprise(data)
 
 						if (!responseDAO) {
 							return MESSAGE.ERROR_INTERNAL_SERVER_MODEL
@@ -269,7 +272,7 @@ const selectGenreByGameController = async (id) => {
 }
 
 module.exports = {
-	insertGameAndGenreController: insertGameAndEnterpriseController,
+	insertGameAndEnterpriseController,
 	selectAllGameAndGenreController,
 	selectByIdGameAndGenreController,
 	deleteGameAndGenreController,

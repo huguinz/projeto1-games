@@ -37,6 +37,7 @@ const controllerCity = require('./controller/cidade/controllerCity.js')
 const controllerEnterprise = require('./controller/empresa/controllerEnterprise.js')
 const controllerTelephone = require('./controller/empresa/controllerTelephone.js')
 const controllerGameAndGenre = require('./controller/jogo/controllerJogoGenero.js')
+const controllerGameAndEnterprise = require('./controller/jogo/controllerJogoEmpresa.js')
 
 //Estabelecendo o formato de dados que deverá chegar no body da requisição (POST ou PUT)
 const bodyParserJSON = bodyParser.json()
@@ -551,6 +552,49 @@ app.get('/v1/controle-jogos/jogo_genero/select_game/:id', cors(), async (request
 app.get('/v1/controle-jogos/jogo_genero/select_genre/:id', cors(), async (request, response) => {
 	const id = request.params.id
 	const responseController = await controllerGameAndGenre.selectGenreByGameController(id)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.post('/v1/controle-jogos/jogo_empresa', cors(), bodyParserJSON, async (request, response) => {
+	const contentType = request.headers['content-type']
+	const data = request.body
+	const responseController = await controllerGameAndEnterprise.insertGameAndEnterpriseController(data, contentType)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.get('/v1/controle-jogos/jogo_genero/select', cors(), async (request, response) => {
+	const responseController = await controllerGameAndGenre.selectAllGameAndGenreController()
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.get('/v1/controle-jogos/jogo_genero/select/:id', cors(), async (request, response) => {
+	const id = request.params.id
+	const responseController = await controllerGameAndGenre.selectByIdGameAndGenreController(id)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.delete('/v1/controle-jogos/jogo_genero/delete/:id', cors(), async (request, response) => {
+	const id = request.params.id
+	const responseController = await controllerGameAndGenre.deleteGameAndGenreController(id)
+
+	response.status(responseController.status_code)
+	response.json(responseController)
+})
+
+app.put('/v1/controle-jogos/jogo_genero/update/:id', cors(), bodyParserJSON, async (request, response) => {
+	const id = request.params.id
+	const contentType = request.headers['content-type']
+	const body = request.body
+
+	const responseController = await controllerGameAndGenre.updateGameAndGenreController(body, id, contentType)
 
 	response.status(responseController.status_code)
 	response.json(responseController)
